@@ -6,3 +6,4 @@ motor
 passlib[bcrypt]
 python-jose
 pydantic
+python-multipart
