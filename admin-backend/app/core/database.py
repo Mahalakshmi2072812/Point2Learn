@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 MONGO_URL = os.getenv("MONGO_URI")
+print("MONGO_URI:", MONGO_URL)
 
 DB_NAME = os.getenv("DB_NAME", "point2learn")
 
