@@ -35,12 +35,15 @@ const fd = obj => {
 
 // AUTH
 export const authRegister = (name, email, password) =>
-  http.post('/auth/register', ({ name, email, password }), {
+  http.post('/auth/register', {
+    name,
+    email,
+    password
   });
 
-export const authActivate  = email => http.post('/auth/activate-payment', fd({ email }))
+export const authActivate  = email => http.post('/auth/activate-payment', { email });
 
-// export const authLogin     = (email, password) => http.post('/auth/login', fd({ email, password }))
+// export const authLogin     = (email, password) => http.post('/auth/login', { email, password });
 
 export const authLogin = (email, password) =>
   http.post('/auth/login', ({ email, password }), {
