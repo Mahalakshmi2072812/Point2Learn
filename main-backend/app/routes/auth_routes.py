@@ -25,13 +25,22 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED)
-def register(name: str = Form(...), email: str = Form(...), password: str = Form(...)):
-    if get_user_by_email(email):
-        raise HTTPException(status_code=400, detail="User already exists")
-    create_user(name, email, password)
-    return {"success": True, "message": "Registered successfully. Please complete payment."}
+# @router.post("/register", status_code=status.HTTP_201_CREATED)
+# def register(name: str = Form(...), email: str = Form(...), password: str = Form(...)):
+#     if get_user_by_email(email):
+#         raise HTTPException(status_code=400, detail="User already exists")
+#     create_user(name, email, password)
+#     return {"success": True, "message": "Registered successfully. Please complete payment."}
 
+@router.post("/register")
+def register(body: RegisterRequest):
+    if get_user_by_email(body.email):
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    create_user(body.name, body.email, body.password)
+
+    return {"success": True, "message": "Registered successfully"}
+    
 
 @router.post("/activate-payment")
 def activate_payment(email: str = Form(...)):
