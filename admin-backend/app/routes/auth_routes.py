@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Form
+from fastapi import APIRouter, HTTPException, Body
 from datetime import datetime
 from app.core.database import get_database
 from app.core.security import hash_password, verify_password
@@ -9,11 +9,9 @@ router = APIRouter(tags=["Admin Auth"])
 
 # ── ADMIN SIGNUP ──────────────────────────────────────────────
 @router.post("/api/auth/register")
-def admin_signup(
-    email: str = Form(...),
-    password: str = Form(...),
-):
-    db = get_database()
+def admin_signup(data: dict = Body(...)):
+    email = data.get("email")
+    password = data.get("password")
 
     if not email or not password:
         raise HTTPException(status_code=400, detail="Email and password are required")
@@ -21,13 +19,14 @@ def admin_signup(
     if len(password) < 6:
         raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
 
+    db = get_database()
     if db.admins.find_one({"email": email.lower().strip()}):
         raise HTTPException(status_code=400, detail="Admin with this email already exists")
 
     db.admins.insert_one({
-        "email":      email.lower().strip(),
-        "password":   hash_password(password),
-        "role":       "admin",
+        "email": email.lower().strip(),
+        "password": hash_password(password),
+        "role": "admin",
         "created_at": datetime.utcnow(),
     })
 
@@ -36,12 +35,11 @@ def admin_signup(
 
 # ── ADMIN LOGIN ───────────────────────────────────────────────
 @router.post("/api/auth/login")
-def admin_login(
-    email: str = Form(...),
-    password: str = Form(...),
-):
-    db = get_database()
+def admin_login(data: dict = Body(...)):
+    email = data.get("email")
+    password = data.get("password")
 
+    db = get_database()
     admin = db.admins.find_one({"email": email.lower().strip()})
     if not admin:
         raise HTTPException(status_code=401, detail="Invalid email or password")
@@ -52,7 +50,7 @@ def admin_login(
     token = create_access_token({"sub": admin["email"]})
 
     return {
-        "message":      "Login successful",
+        "message": "Login successful",
         "access_token": token,
-        "token_type":   "bearer",
+        "token_type": "bearer",
     }
