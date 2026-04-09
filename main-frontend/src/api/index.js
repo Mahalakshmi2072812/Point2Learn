@@ -1,7 +1,16 @@
 import axios from 'axios'
 
 const API_BASE = import.meta.env.VITE_API_BASE;
-const http = axios.create({ baseURL: API_BASE, timeout: 15000 });
+// const http = axios.create({ baseURL: API_BASE, timeout: 15000 });
+
+const http = axios.create({
+  baseURL: API_BASE,
+  timeout: 60000,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded"
+  }
+});
+
 
 http.interceptors.request.use(cfg => {
   const t = localStorage.getItem('p2l_token')
@@ -14,16 +23,34 @@ http.interceptors.response.use(r => r, err => {
   return Promise.reject(err)
 })
 
+// const fd = obj => {
+//   const f = new FormData()
+//   Object.entries(obj).forEach(([k, v]) => { if (v != null && v !== '') f.append(k, String(v)) })
+//   return f
+// }
 const fd = obj => {
-  const f = new FormData()
-  Object.entries(obj).forEach(([k, v]) => { if (v != null && v !== '') f.append(k, String(v)) })
-  return f
-}
+  const params = new URLSearchParams();
+  Object.entries(obj).forEach(([k, v]) => {
+    if (v != null && v !== '') params.append(k, String(v));
+  });
+  return params;
+};
 
 // AUTH
-export const authRegister  = (name, email, password) => http.post('/auth/register', fd({ name, email, password }))
+export const authRegister = (name, email, password) =>
+  http.post('/auth/register', fd({ name, email, password }), {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+  });
+
 export const authActivate  = email => http.post('/auth/activate-payment', fd({ email }))
-export const authLogin     = (email, password) => http.post('/auth/login', fd({ email, password }))
+
+// export const authLogin     = (email, password) => http.post('/auth/login', fd({ email, password }))
+
+export const authLogin = (email, password) =>
+  http.post('/auth/login', fd({ email, password }), {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" }
+  });
+
 export const authLogout    = () => http.post('/auth/logout')
 export const forgotPassword    = email => http.post('/auth/forgot-password', { email })
 export const validateResetToken = token => http.get('/auth/reset-password/' + token)
