@@ -8,7 +8,7 @@ router = APIRouter(tags=["Admin Auth"])
 
 
 # ── ADMIN SIGNUP ──────────────────────────────────────────────
-@router.post("/admin/signup")
+@router.post("/api/auth/register")
 def admin_signup(
     email: str = Form(...),
     password: str = Form(...),
@@ -35,7 +35,7 @@ def admin_signup(
 
 
 # ── ADMIN LOGIN ───────────────────────────────────────────────
-@router.post("/admin/login")
+@router.post("/api/auth/login")
 def admin_login(
     email: str = Form(...),
     password: str = Form(...),
