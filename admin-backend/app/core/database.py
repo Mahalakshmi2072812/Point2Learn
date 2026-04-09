@@ -7,7 +7,7 @@ load_dotenv()
 
 MONGO_URL = os.getenv("MONGO_URI")
 
-DB_NAME = os.getenv("DB_NAME")
+DB_NAME = os.getenv("DB_NAME", "point2learn")
 
 # Global client variable
 client = None
