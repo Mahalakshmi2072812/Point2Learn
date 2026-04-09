@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import axios from 'axios'
 
-const BACKEND = 'http://localhost:8001'
+const BACKEND = import.meta.env.VITE_API_BASE
 const http = axios.create({ baseURL: BACKEND })
 http.interceptors.request.use(cfg => {
   const t = localStorage.getItem('admin_token')
