@@ -6,9 +6,6 @@ const API_BASE = import.meta.env.VITE_API_BASE;
 const http = axios.create({
   baseURL: API_BASE,
   timeout: 60000,
-  headers: {
-    "Content-Type": "application/x-www-form-urlencoded"
-  }
 });
 
 
@@ -38,7 +35,7 @@ const fd = obj => {
 
 // AUTH
 export const authRegister = (name, email, password) =>
-  http.post('/auth/register', fd({ name, email, password }), {
+  http.post('/auth/register', ({ name, email, password }), {
     headers: { "Content-Type": "application/x-www-form-urlencoded" }
   });
 
@@ -47,7 +44,7 @@ export const authActivate  = email => http.post('/auth/activate-payment', fd({ e
 // export const authLogin     = (email, password) => http.post('/auth/login', fd({ email, password }))
 
 export const authLogin = (email, password) =>
-  http.post('/auth/login', fd({ email, password }), {
+  http.post('/auth/login', ({ email, password }), {
     headers: { "Content-Type": "application/x-www-form-urlencoded" }
   });
 
