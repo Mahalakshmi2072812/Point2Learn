@@ -25,83 +25,39 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 
-# @router.post("/register", status_code=status.HTTP_201_CREATED)
-# def register(name: str = Form(...), email: str = Form(...), password: str = Form(...)):
-class RegisterRequest(BaseModel):
-    name: str
-    email: str
-    password: str
-
-
-@router.post("/register")
-def register(body: RegisterRequest):
-    if get_user_by_email(body.email):
-        raise HTTPException(status_code=400, detail="User already exists")
-
-    create_user(body.name, body.email, body.password)
-
-    return {"success": True, "message": "Registered successfully"}
-
-    
-    
+@router.post("/register", status_code=status.HTTP_201_CREATED)
+def register(name: str = Form(...), email: str = Form(...), password: str = Form(...)):
     if get_user_by_email(email):
         raise HTTPException(status_code=400, detail="User already exists")
     create_user(name, email, password)
     return {"success": True, "message": "Registered successfully. Please complete payment."}
 
 
-# @router.post("/activate-payment")
-# def activate_payment(email: str = Form(...)):
-
-class PaymentRequest(BaseModel):
-    email: str
-
 @router.post("/activate-payment")
-def activate_payment(body: PaymentRequest):
+def activate_payment(email: str = Form(...)):
     db = get_db()
-
-    user = db.users.find_one({"email": body.email})   # ✅ FIXED
-
+    user = db.users.find_one({"email": email})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
     db.users.update_one(
         {"_id": ObjectId(user["_id"])},
         {"$set": {"payment_status": "paid", "payment_activated_at": datetime.utcnow()}}
     )
-
     return {"success": True, "message": "Payment activated successfully"}
 
 
-# @router.post("/login")
-# def login(email: str = Form(...), password: str = Form(...)):
-class LoginRequest(BaseModel):
-    email: str
-    password: str
-
 @router.post("/login")
-def login(body: LoginRequest):
+def login(email: str = Form(...), password: str = Form(...)):
     db = get_db()
-
-    user = db.users.find_one({"email": body.email})   # ✅ FIXED
-
+    user = db.users.find_one({"email": email})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-
-    if not verify_password(body.password, user["password"]):   # ✅ FIXED
+    if not verify_password(password, user["password"]):
         raise HTTPException(status_code=401, detail="Invalid password")
-
     if user.get("payment_status") != "paid":
         raise HTTPException(status_code=403, detail="Payment not completed")
-
-    token = create_access_token({
-        "user_id": str(user["_id"]),
-        "role": user.get("role", "user")
-    })
-
+    token = create_access_token({"user_id": str(user["_id"]), "role": user.get("role", "user")})
     return {"success": True, "access_token": token, "token_type": "bearer"}
-
-
 
 
 @router.post("/logout")
