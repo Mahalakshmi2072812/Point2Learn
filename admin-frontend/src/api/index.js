@@ -1,6 +1,9 @@
 import axios from 'axios'
 
-const http = axios.create({ baseURL: 'http://localhost:8000/api', timeout: 15000 })
+// const http = axios.create({ baseURL: 'http://localhost:8000/api', timeout: 15000 })
+const API_BASE = import.meta.env.VITE_API_BASE
+const http = axios.create({ baseURL: API_BASE, timeout: 15000 })
+
 
 http.interceptors.request.use(cfg => {
   const t = localStorage.getItem('p2l_token')
