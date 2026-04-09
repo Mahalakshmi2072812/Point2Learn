@@ -8,7 +8,7 @@ _db = None
 def connect_db():
     global client, _db
 
-    url = os.getenv("MONGO_URL")
+    url = os.getenv("MONGO_URI")
 
     if not url:
         raise Exception("❌ MONGO_URL not found in .env")
