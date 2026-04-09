@@ -36,7 +36,6 @@ const fd = obj => {
 // AUTH
 export const authRegister = (name, email, password) =>
   http.post('/auth/register', ({ name, email, password }), {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" }
   });
 
 export const authActivate  = email => http.post('/auth/activate-payment', fd({ email }))
@@ -45,7 +44,6 @@ export const authActivate  = email => http.post('/auth/activate-payment', fd({ e
 
 export const authLogin = (email, password) =>
   http.post('/auth/login', ({ email, password }), {
-    headers: { "Content-Type": "application/x-www-form-urlencoded" }
   });
 
 export const authLogout    = () => http.post('/auth/logout')
