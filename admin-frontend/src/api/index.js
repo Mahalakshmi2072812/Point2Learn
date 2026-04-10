@@ -43,8 +43,11 @@ const fd = obj => {
 //
 // 🔐 MAIN AUTH (existing)
 //
-export const authRegister  = (name, email, password) =>
-  http.post('/auth/register', ({ name, email, password })
+// export const authRegister  = (name, email, password) =>
+//   http.post('/auth/register', ({ name, email, password })
+
+export const authRegister = (name, email, password) =>
+  http.post('/auth/register', { name, email, password })
 
 export const authActivate  = email =>
   http.post('/auth/activate-payment', fd({ email }))
@@ -58,20 +61,34 @@ export const authLogout    = () =>
 //
 // 🛠️ ADMIN AUTH (NEW)
 //
+// export const adminLogin = (email, password) =>
+//   axios.post(
+//     'https://point2learn-1.onrender.com/admin/login',
+//     { email, password }
+//   )
+
+// export const adminSignup = (email, password) =>
+//   axios.post(
+//     'https://point2learn-1.onrender.com/admin/signup',
+//     fd({ email, password })
+//   )
+
+// export const adminLogout = () =>
+//   axios.post('https://point2learn-1.onrender.com/admin/logout')
+
+
+
 export const adminLogin = (email, password) =>
-  axios.post(
-    'https://point2learn-1.onrender.com/admin/login',
-    { email, password }
-  )
+  http.post('/admin/login', { email, password })
 
 export const adminSignup = (email, password) =>
-  axios.post(
-    'https://point2learn-1.onrender.com/admin/signup',
-    fd({ email, password })
-  )
+  http.post('/admin/signup', fd({ email, password }))
 
 export const adminLogout = () =>
-  axios.post('https://point2learn-1.onrender.com/admin/logout')
+  http.post('/admin/logout')
+
+
+
 
 //
 // 👤 USER
