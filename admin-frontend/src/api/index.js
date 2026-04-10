@@ -1,8 +1,16 @@
 import axios from 'axios'
 
-const API_BASE = import.meta.env.VITE_API_BASE
-console.log("BASE URL:", import.meta.env.VITE_API_BASE)
-const http = axios.create({ baseURL: API_BASE, timeout: 15000 })
+// const API_BASE = import.meta.env.VITE_API_BASE
+// console.log("BASE URL:", import.meta.env.VITE_API_BASE)
+// const http = axios.create({ baseURL: API_BASE, timeout: 15000 })
+
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+const http = axios.create({
+  baseURL: API_BASE,
+  timeout: 60000,
+});
+
 
 // 🔐 Attach token
 http.interceptors.request.use(cfg => {
@@ -36,13 +44,13 @@ const fd = obj => {
 // 🔐 MAIN AUTH (existing)
 //
 export const authRegister  = (name, email, password) =>
-  http.post('/auth/register', fd({ name, email, password }))
+  http.post('/auth/register', ({ name, email, password })
 
 export const authActivate  = email =>
   http.post('/auth/activate-payment', fd({ email }))
 
 export const authLogin     = (email, password) =>
-  http.post('/auth/login', fd({ email, password }))
+  http.post('/auth/login', { email, password })
 
 export const authLogout    = () =>
   http.post('/auth/logout')
@@ -53,7 +61,7 @@ export const authLogout    = () =>
 export const adminLogin = (email, password) =>
   axios.post(
     'https://point2learn-1.onrender.com/admin/login',
-    fd({ email, password })
+    { email, password }
   )
 
 export const adminSignup = (email, password) =>
