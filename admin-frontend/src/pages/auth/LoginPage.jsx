@@ -44,18 +44,51 @@ export default function LoginPage() {
   const { toast }  = useToast()
   const navigate   = useNavigate()
 
+  // const submit = async e => {
+  //   e.preventDefault(); setL(true)
+  //   try {
+  //     const r = await authLogin(email, pass)
+  //     signin(r.data.access_token)
+  //     navigate('/dashboard')
+  //   } catch(err) {
+  //     toast(err.response?.data?.detail || 'Login failed', 'error')
+  //   }
+  //   setL(false)
+  // }
+
+  
   const submit = async e => {
-    e.preventDefault(); setL(true)
-    try {
-      const r = await authLogin(email, pass)
-      signin(r.data.access_token)
+  e.preventDefault()
+  setL(true)
+
+  try {
+    let r
+
+    if (email.includes('admin')) {
+      r = await adminLogin(email, pass)
+
+      const token = r.data.access_token || r.data
+      localStorage.setItem('admin_token', token)
+
+      toast('Admin login successful', 'success')
+      navigate('/admin/dashboard')
+    } else {
+      r = await authLogin(email, pass)
+
+      const token = r.data.access_token || r.data
+      signin(token)
+
       navigate('/dashboard')
-    } catch(err) {
-      toast(err.response?.data?.detail || 'Login failed', 'error')
     }
-    setL(false)
+
+  } catch (err) {
+    toast(err.response?.data?.detail || 'Login failed', 'error')
   }
 
+  setL(false)
+}
+
+  
   return (
     <div style={{ minHeight:'100vh', background:'#050818', color:'#f0f4ff',
       fontFamily:"'Sora','Plus Jakarta Sans',sans-serif", display:'flex', overflow:'hidden' }}>
